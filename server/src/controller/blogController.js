@@ -1,6 +1,6 @@
 const createError = require('http-errors')
 const slugify = require('slugify')
-const { successHandler } = require("./requestHandler")
+const { successHandler, errorHandler } = require("./requestHandler")
 const Blog = require('../models/blogModel')
 
 const getAllBlogs = async (req, res, next) => {
@@ -38,6 +38,9 @@ const createBlog = async (req, res, next) => {
             image: image.path,
         })
 
+        const blogData = await newBlog.save();
+
+        if(!blogData) return errorHandler(res, 400, 'blog was not created')
 
         return successHandler(res, 200, 'Blog was created successfully', newBlog)
 
