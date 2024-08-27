@@ -1,15 +1,21 @@
 const express = require('express')
 
 const { getAllBlogs, deleteBlog, updateBlog, createBlog, getSingleBlog } = require('../controller/blogController')
+const upload = require('../middleware/fileUpload')
 
 const blogRouter = express.Router()
 
 
-blogRouter.use('/').get(getAllBlogs).post(createBlog)
+blogRouter.route('/')
+    .get(getAllBlogs)
+    .post(upload.single('image'), createBlog)
 
-blogRouter.use('/:id').put(updateBlog).delete(deleteBlog).get(getSingleBlog)
+blogRouter.route('/:id')
+    .put(updateBlog)
+    .delete(deleteBlog)
+    .get(getSingleBlog)
 
-blogRouter.use('*', (req, res, ) => {
+blogRouter.route('*', (req, res, ) => {
     res.send('router not found')
 })
 

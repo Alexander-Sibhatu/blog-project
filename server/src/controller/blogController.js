@@ -9,6 +9,8 @@ const getAllBlogs = async (req, res, next) => {
 }
 const createBlog = async (req, res, next) => {
     try {
+        console.log(req.body)
+        console.log(req.file)
         successHandler(res, 200, 'Blog created')
     } catch (error) {
         next(error)
