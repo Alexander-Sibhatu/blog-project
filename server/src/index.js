@@ -14,11 +14,6 @@ const port = dev.app.serverPort
 
 
 
-app.listen(port, () => {
-    console.log(`server is running at http://localhost:${port}`)
-    connectDB()
-})
-
 
 app.use(cors({
     origin: ['http://127.0.0.1:3000', 'http://localhost:3000'],
@@ -33,9 +28,15 @@ app.use((req, res, next) => {
     next(createError(404, 'Route is not found'))
 })
 
+app.listen(port, () => {
+    console.log(`server is running at http://localhost:${port}`)
+    connectDB()
+})
+
 app.get(('/test', (req, res) => {
     res.send('test api is working')
 }))
+
 
 app.use((err, req, res, next) => {
     const statusCode = err.statusCode;
