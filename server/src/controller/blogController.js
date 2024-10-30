@@ -5,7 +5,9 @@ const Blog = require('../models/blogModel')
 
 const getAllBlogs = async (req, res, next) => {
     try {
-        successHandler(res, 200, 'Return all blogs')
+        const blogs = await Blog.find({})
+        console.log(blogs)
+        return successHandler(res, 200, 'Return all blogs', blogs)
     } catch (error) {
         next(error)
     }
