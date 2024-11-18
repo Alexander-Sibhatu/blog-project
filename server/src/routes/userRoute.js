@@ -1,12 +1,13 @@
-const formidable = require('express-formidable')
-const userRouter = require('express').Router(); 
+// const formidable = require('express-formidable')
+const userRouter = require('express').Router();
+const { registerUser } = require('../controller/userController') 
+const uploadUser = require('../middleware/fileUploadUser');
 
 
-const {isLoggedIn, isLoggedOut} = require('../middlewares/auth');
-const upload = require('../middlewares/upload');
+// const {isLoggedIn, isLoggedOut} = require('../middlewares/auth');
 
 
-userRouter.post('/register', upload.single('image'), registerUser)
+userRouter.post('/register', uploadUser.single('image'), registerUser)
 // userRouter.post('/verify-email', verifyEmail)
 // userRouter.post('/login', isLoggedOut, loginUser)
 // userRouter.get('/logout', isLoggedIn, logoutUser)
