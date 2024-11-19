@@ -14,7 +14,6 @@ const sendEmailWithNodeMailer = async (emailData) => {
       debug: true,
     });
 
-    console.log(dev.smtpPassword, dev.smtpUsername)
     const mailOptions = {
       from: dev.app.smtpUsername, // sender's address
       to: emailData.email, // list of receivers
