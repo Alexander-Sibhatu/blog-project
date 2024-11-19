@@ -14,7 +14,6 @@ const registerUser = async (req, res) => {
     try {
         const { name, email, phone, password } = req.body;
         const image = req.file ? req.file : null;
-        console.log(name, email, phone, password)
 
         if(!name || !email || !phone || !password) {
             return res.status(404).json({
@@ -42,8 +41,9 @@ const registerUser = async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, saltRounds);
+
         // //store the data temporarily
-        const token = jwt.sign({...req.body, password: hashedPassword, image: image ? image.path : null }, 
+        const token = jwt.sign({name, email, phone, password: hashedPassword, image: image ? image.path : null }, 
             String(dev.app.jwtActivationSecretKey), {expiresIn: '10m'})
 
             // prepare the email
@@ -57,15 +57,7 @@ const registerUser = async (req, res) => {
            };
             
             // Attempt to send the email
-            try {
-                await sendEmailWithNodeMailer(emailData);
-                console.log("Email sent successfully");
-            } catch (emailError) {
-                console.error("Error sending email:", emailError);
-                return res.status(500).json({
-                    message: "Failed to send activation email. Please try again.",
-                });
-            }
+            await sendEmailWithNodeMailer(emailData);
 
         // verification email to the user
            return successHandler(
@@ -88,43 +80,46 @@ const registerUser = async (req, res) => {
 
 const verifyEmail = (req, res) => {
     try {
-        const {token} = req.body;
+        const { token } = req.body;
+
         if(!token) {
             return res.status(404).json({
                 message: "token is missing"
             })
         }
 
-        jwt.verify(token, dev.jwtSecretKey, async function(err, decoded) {
+        jwt.verify(token, String(dev.app.jwtActivationSecretKey), async (err, decoded) => {
             if (err) {
                 return res.status(401).json({
-                    message: "Token is expired"
-            
+                    message: "Token has expired"
                 });
             }
 
+            console.log("Decoded token:", decoded)
+
             // decoded the data
-            const { name, email, phone, hashedPassword, image  } = decoded;
-            const isExist = await User.findOne({email: email})
-        if(isExist){
-            return res.status(404).json({
-                message: 'user with email already exists'
-            })
-        }
+        const { name, email, phone, password, image  } = decoded;
+           
 
         // create the user
 
         const newUser = new User({
-            name: name,
-            email: email,
-            password: hashedPassword,
-            phone: phone,
+            name,
+            email,
+            password,
+            phone,
         })
 
-        if (image) {
-            newUser.image.data = fs.readFileSync(image.path);
-            newUser.image.contentType = image.type;
+       // Attach the image if available
+       if (image && fs.existsSync(image)) {
+        try {
+            newUser.image.data = fs.readFileSync(image);
+            newUser.image.contentType = "image/jpeg"; // Replace with the actual type
+        } catch (err) {
+            console.error("Error reading image file:", err);
+            return res.status(400).json({ message: "Error reading image file" });
         }
+    }
         // save the user
         const user = await newUser.save()
         if(!user) {
@@ -377,5 +372,5 @@ const updateUser = async (req, res) => {
 
 module.exports = { 
     registerUser, 
-
+    verifyEmail
 };

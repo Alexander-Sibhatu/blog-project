@@ -12,7 +12,5 @@ const dev = {
     }
 };
 
-console.log('SMTP Username:', dev.app.smtpUsername);
-console.log('SMTP Password:', dev.app.smtpPassword);
 
 module.exports = dev
