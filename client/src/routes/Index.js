@@ -8,6 +8,7 @@ import Register from '../pages/Register';
 import CreateBlog from '../pages/CreateBlog';
 import Blogs from '../pages/Blogs';
 import Login from '../pages/Login';
+import Activate from '../pages/Activate';
 
 const Index = () => {
   return (
@@ -20,6 +21,7 @@ const Index = () => {
             <Route path= '/create-blog' element={ <CreateBlog />}/>
             <Route path= '/register' element={ <Register />}/>
             <Route path= '/login' element={ <Login />}/>
+            <Route path= '/api/users/activate/:token' element={ <Activate />}/>
         </Routes>
     </Router>
   )
