@@ -6,7 +6,7 @@ const storage = multer.diskStorage({
     destination: function(req, file, cb) {
         cb(null, path.join(__dirname, '../public/images/users')); // Set user-specific upload folder
     },
-    filename: function(req, file, cb) {
+    filename: function (req, file, cb) {
         cb(null, Date.now() + '-' + file.originalname);
     },
 });

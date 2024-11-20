@@ -1,12 +1,9 @@
 import axios from 'axios';
-const baseUrl = 'http://127.0.0.1:8080'
+axios.defaults.withCredentials = true;
+const baseUrl = 'http://localhost:8080'
 
 
 export const registerUser = async (newUser) => {
-    const response = await axios.post(`${baseUrl}/api/users/register`, newUser, {
-        headers: {
-            'Content-Type': 'multipart/form-data',
-        },
-    });
+    const response = await axios.post(`${baseUrl}/api/users/register`, newUser);
     return response.data; // Backend should return a success message
 };

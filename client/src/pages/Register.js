@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { toast } from 'react-toastify';
-import axios from 'axios';
 import { registerUser } from '../services/UserServices'
 
 
@@ -42,7 +41,8 @@ const Register = () => {
             toast.success(response.mesage);
 
         } catch (error) {
-            toast.error(error.response.data.error.message)
+            console.error(error)
+            // toast.error(error.response?.data?.error.message || "Something went wrong")
         }
     }
   return (
@@ -50,7 +50,7 @@ const Register = () => {
         <h2 className='center'>Register</h2>
         <form onSubmit={handleSubmit} className="register-form">
             <div className="form-group">
-                <label htmlFor="name">Name:</label>
+                <label form="name">Name:</label>
                 <input
                     type="text"
                     id="name"
@@ -61,7 +61,7 @@ const Register = () => {
                 />
             </div>
             <div className='form-group'>
-                <label htmlFor="email">Email:</label>
+                <label form="email">Email:</label>
                 <input
                     type="email"
                     id="email"
@@ -72,7 +72,7 @@ const Register = () => {
                 />
             </div>
             <div className="form-group">
-                <label htmlForm="password">Password:</label>
+                <label form="password">Password:</label>
                 <input
                     type="password"
                     id="password"
@@ -83,7 +83,7 @@ const Register = () => {
                 />
             </div>
             <div className="form-group">
-                <label htmlFor="phone">Phone:</label>
+                <label form="phone">Phone:</label>
                 <input
                     type="text"
                     id="phone"
@@ -94,7 +94,7 @@ const Register = () => {
                 />
             </div>
             <div className="form-group">
-                <label htmlFor="image">Profile Image:</label>
+                <label form="image">Profile Image:</label>
                 <input
                     type="file"
                     id="image"

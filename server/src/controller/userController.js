@@ -5,7 +5,7 @@ const fs = require('fs');
 const mongoose = require('mongoose')
 const createError = require('http-errors')
 const User = require('../models/userModel');
-const { successHandler } = require('./requestHandler');
+const { successHandler, errorHandler } = require('./requestHandler');
 const dev = require('../config')
 const { sendEmailWithNodeMailer } = require('../helper/email')
 
@@ -16,19 +16,17 @@ const registerUser = async (req, res) => {
         const image = req.file ? req.file : null;
 
         if(!name || !email || !phone || !password) {
-            return res.status(404).json({
-                message: "name, email, phone or password is missing"
-            })
+            return errorHandler(res, 400, "name, email, phone, or password is missing")
         }
 
         if (password.length < 6) {
-            return res.status(404).json({
+            return res.status(400).json({
                 message: 'minimum length for password is 6'
             })
         }
 
-        if (image && image.size > 10000000) {
-            return res.status(404).json({
+        if (image && image.size > 1024 * 1024 * 2) {
+            return res.status(400).json({
                 message: 'maximum size for image is 1Mb'
             })
         }
