@@ -6,6 +6,7 @@ const dev = {
         jwtActivationSecretKey: process.env.JWT_ACTIVATION_SECRET_KEY,
         smtpUsername: process.env.SMTP_USERNAME,
         smtpPassword: process.env.SMTP_PASSWORD,
+        clientUrl: process.env.CLIENT_URL
     },
     db: {
         mongoUrl: process.env.MONGODB_URL || '',
