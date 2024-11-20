@@ -41,8 +41,12 @@ const Register = () => {
             toast.success(response.mesage);
 
         } catch (error) {
-            console.error(error)
-            // toast.error(error.response?.data?.error.message || "Something went wrong")
+            console.error("Error response", error);
+            const errorMessage =  
+            error.response?.data?.message || // Top-level message
+            error.response?.data?.error?.message || // Nested error.message
+            "An error occurred. Please check your activation token.";
+            toast.error(errorMessage)
         }
     }
   return (
