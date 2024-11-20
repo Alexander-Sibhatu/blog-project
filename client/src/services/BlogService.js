@@ -2,7 +2,10 @@ import axios from 'axios';
 const baseUrl = 'http://127.0.0.1:8080'
 
 export const createBlogService = async (newBlog) => {
-    const response =  await axios.post(`${baseUrl}/api/blogs`, newBlog)
+    const response =  await axios.post(`${baseUrl}/api/blogs`, newBlog, {
+            headers: { "Content-Type": "multipart/form-data" },
+        }
+    )
     return response.data;
 }
 export const getAllBlogRequest = async () => {
