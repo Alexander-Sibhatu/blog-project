@@ -42,15 +42,18 @@ const registerUser = async (req, res) => {
 
         // //store the data temporarily
         const token = jwt.sign({name, email, phone, password: hashedPassword, image: image ? image.path : null }, 
-            String(dev.app.jwtActivationSecretKey), {expiresIn: '10m'})
+            String(dev.app.jwtActivationSecretKey), 
+            {expiresIn: '10m'}
+        );
+
 
             // prepare the email
             const emailData = {
              email,
              subject: "Account Activation Email",
              html: `
-             <h2> Hello ${name} . </h2>
-             <p> Please click <a href="${dev.clientUrl}/user/activate/${token}">here</a> to  activate your account </p>     
+             <h2> Hello ${name}, </h2>
+             <p> Please click <a href="${dev.app.clientUrl}/api/users/activate/${token}" target="_blank">here</a> to  activate your account </p>     
              `, // html body
            };
             
@@ -78,7 +81,9 @@ const registerUser = async (req, res) => {
 
 const verifyEmail = (req, res) => {
     try {
-        const { token } = req.body;
+        console.log("Request body: ", req.body)
+        const token = req.body.token;
+        console.log("verify email: ", token)
 
         if(!token) {
             return res.status(404).json({
@@ -86,6 +91,9 @@ const verifyEmail = (req, res) => {
             })
         }
 
+        const decodedToken = jwt.decode(token, { complete: true });
+        console.log("Decoded token without verification:", decodedToken);
+    
         jwt.verify(token, String(dev.app.jwtActivationSecretKey), async (err, decoded) => {
             if (err) {
                 return res.status(401).json({
