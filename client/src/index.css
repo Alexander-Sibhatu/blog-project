@@ -1,0 +1,22 @@
+.nav {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    background-color: #2b2b2b;
+}
+
+.nav_link {
+    font-size: large;
+    color: white; 
+    text-decoration: none;
+}
+.nav_link:hover {
+    color: rgb(208, 142, 104); 
+    text-decoration: none;
+}
+
+.user-image {
+    width: 12rem;
+    height: auto;
+}
