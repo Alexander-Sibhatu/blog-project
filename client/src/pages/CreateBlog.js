@@ -26,9 +26,7 @@ const CreateBlog = () => {
             newBlog.append('title', title)
             newBlog.append('description', description)
             newBlog.append('image', image)
-            
-            console.log("FormData being sent:", [...newBlog.entries()]); // Debug log
-            
+
             const response = await createBlogService(newBlog)
             toast(response.message)
 
