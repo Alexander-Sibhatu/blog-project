@@ -2,7 +2,8 @@
 const userRouter = require('express').Router();
 const { 
     registerUser,
-    verifyEmail
+    verifyEmail,
+    loginUser
 } = require('../controller/userController') 
 const uploadUser = require('../middleware/fileUploadUser');
 
@@ -12,6 +13,7 @@ const uploadUser = require('../middleware/fileUploadUser');
 
 userRouter.post('/register', uploadUser.single('image'), registerUser)
 userRouter.post('/activate', verifyEmail)
+userRouter.post('/login', loginUser)
 // userRouter.post('/login', isLoggedOut, loginUser)
 // userRouter.get('/logout', isLoggedIn, logoutUser)
 // userRouter.get('/', isLoggedIn, userProfile)
