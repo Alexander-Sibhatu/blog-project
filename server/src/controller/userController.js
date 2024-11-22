@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken');
 const saltRounds = 10;
 const bcrypt = require('bcrypt')
+const { comparePassword } = require('../helper/bcryptPassword')
 const fs = require('fs');
-const mongoose = require('mongoose')
 const createError = require('http-errors')
 const User = require('../models/userModel');
 const { successHandler, errorHandler } = require('./requestHandler');
@@ -168,24 +168,43 @@ const loginUser = async (req, res) => {
         const isPasswordMatch = await comparePassword(password, registeredUser.password);
         
         if(!isPasswordMatch){
-            return res.status(400).json({
-                message: 'email/password does not match',
-            });
+            throw createError(400, 'email/password does not match')
         }
 
-        // creating session >> browser as a cookie
-        req.session.userId = registeredUser._id;
+        if (registeredUser.is_Banned)
+            throw createError(204, "you are banned. Please contact the authority")
         
-        
-        res.status(200).json({
-            user: {
-                name: registerUser.name,
-                email: registerUser.email,
-                phone: registerUser.phone,
-                image: registerUser.image,
-            },
-            message: 'login successful'
+
+        const token = jwt.sign(
+            {_id: registeredUser._id},
+            String(dev.app.jwtAuthorizationSecretKey || "gxJ3TlObUC6oHsdhZ8xnOgv4vMWySzDw9Hn8Ipqm"),
+            {expiresIn:"8m"}
+        );
+        // reset the cookie
+        if(res.cookies && req.cookies[`${registeredUser._id}`]){
+            res.cookies[`${registeredUser._id}`] = '';
+        }
+
+        // Set a new cookie with the token
+        res.cookie(String(registeredUser._id), token, {
+            path: '/',
+            expires: new Date(Date.now() + 1000 * 60 * 7),
+            httpOnly: true,
+            // sameSite: 'none',
+            // securet: true
         });
+
+        const userData = {
+            id: registeredUser._id,
+            name: registeredUser.name,
+            email: registeredUser.email,
+            phone: registeredUser.phone,
+            image: registeredUser.image,
+        }
+        return successHandler(res, 200, "Loged in Successfully", {
+            user: userData,
+            token,
+        })
     } catch (error) {
         res.status(500).json({
             message: error.message, 
@@ -378,5 +397,6 @@ const updateUser = async (req, res) => {
 
 module.exports = { 
     registerUser, 
-    verifyEmail
+    verifyEmail,
+    loginUser,
 };
