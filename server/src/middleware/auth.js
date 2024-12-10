@@ -1,17 +1,19 @@
 const createError = require('http-errors');
 const dev = require('../config');
 const User = require('../models/userModel');
+const jwt = require('jsonwebtoken')
 
 const isLoggedIn = (req, res, next) => {
     try {
         // cookies here
-        if(!res.headers.cookie) {
+        const cookies = req.headers.cookie
+        if(!cookies) {
             return res.status(404).send({
                 message: 'No cookie found',
             })
         }
 
-        const token = req.headers.cookie.split('=')[1];
+        const token = cookies.split('=')[1];
 
         // verify token
         if (!token){
@@ -20,7 +22,7 @@ const isLoggedIn = (req, res, next) => {
             })
         }
 
-        const decoded = jwt.verify(res, token, String(dev.app.jwtAuthorizationSecretKey));
+        const decoded = jwt.verify(token, String(dev.app.jwtAuthorizationSecretKey));
         if (!decoded) throw createError(403, 'Invalid Token');
         req._id = decoded._id;
         next();
