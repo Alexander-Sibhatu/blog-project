@@ -81,7 +81,7 @@ const registerUser = async (req, res) => {
 
 const verifyEmail = (req, res) => {
     try {
-        console.log("Request body: ", req.body)
+        // console.log("Request body: ", req.body)
         const token = req.body.token;
         console.log("verify email: ", token)
 
@@ -178,7 +178,7 @@ const loginUser = async (req, res) => {
         const token = jwt.sign(
             {_id: registeredUser._id},
             String(dev.app.jwtAuthorizationSecretKey || "gxJ3TlObUC6oHsdhZ8xnOgv4vMWySzDw9Hn8Ipqm"),
-            {expiresIn:"8m"}
+            {expiresIn:"3m"}
         );
         // reset the cookie
         if(res.cookies && req.cookies[`${registeredUser._id}`]){
@@ -188,7 +188,7 @@ const loginUser = async (req, res) => {
         // Set a new cookie with the token
         res.cookie(String(registeredUser._id), token, {
             path: '/',
-            expires: new Date(Date.now() + 1000 * 60 * 7),
+            expires: new Date(Date.now() + 1000 * 60 * 2),
             httpOnly: true,
             // sameSite: 'none',
             // securet: true
@@ -230,11 +230,11 @@ const logoutUser = (req, res) => {
 
 const userProfile = async (req, res) => {
     try {
-        const userData = await User.findById(req.session.userId);
-        res.status(200).json({
-            ok: true,
-            message: 'user profile',
-            user: userData
+        const id = req.params.id; 
+        const user = await User.findById(id);
+        if(!user) throw createError(404, 'user was not found')
+        return successHandler(res, 200, 'user was returned successfully !', {
+            user: user,
         });
     } catch (error) {
         res.status(500).json({
